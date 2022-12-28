@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+	<meta charset="utf-8" />
+	<title>Index</title>
+	<script src="lib/danfo.min.js"></script>
+	<script src="lib/p5.min.js"></script>
+	<script src="lib/plotly-2.8.3.min.js"></script>
+	<script src="lib/notyf.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="styles.css" />
+	<link rel="stylesheet" type="text/css" href="lib/notfy.min.css" />
+</head>
+
+<body>
+	<section id="filter-design">
+		<div class="box" id="design-unit-circle">
+			<h2 id="circle-title">Digital Filter Design</h2>
+			<div id="circle-canvas"></div>
+			<div id="circle-control">
+				<button id="zero" class="btn-cricle-control mode-control">Add Zeros</button>
+				<button id="pole" class="btn-cricle-control mode-control">Add Poles</button>
+				<button id="remove" class="btn-cricle-control">Remove</button>
+				<button id="remove-zeros" class="btn-cricle-control">Remove Zeros</button>
+				<button id="remove-poles" class="btn-cricle-control">Remove Poles</button>
+				<button id="remove-all" class="btn-cricle-control">Remove All</button>
+
+			</div>
+		</div>
+
+		<div class="box" id="filter-response">
+			<h4 class="freq-response-title title">Magnitude Response</h4>
+			<div id="filter-mag-response" class="response-plotting"> </div>
+			<h4 class="freq-response-title title">Phase Response</h2>
+				<div id="filter-phase-response" class="response-plotting"> </div>
+		</div>
+	</section>
+
+	<br />
+	<section id="real-time-filter">
+		<div class="box" id="real-time-filter-container">
+			<h2 id="real-time-title" class="title">Real Time Filtering</h2>
+			<input class="btn" type="file" id="csvFile" accept=".csv" />
+			<button class="btn" value="Submit" id="csv-submitter">Filter</button>
+			<button class="btn" value="Stop" id="stop-filtering">Stop</button>
+			<input type="range" min="1" max="100" value="1" class="slider" id="myRange">
+			<p id="slider-value"></p>
+
+		</div>
+		<div class="box" id="real-time-filter-plots">
+			<div class="half-plot-container" id="all-pass-response-container">
+				<h4 class="title" id="original-signal-title">Original Signal</h4>
+				<div class=".half-plot " id="original-signal"></div>
+			</div>
+			<div id="all-pass-response-container">
+				<h4 class="title" id="filtered-signal-title">Filtered Signal</h4>
+				<div class=".half-plot" id="filtered-signal"></div>
+			</div>
+		</div>
+	</section>
+
+
+	<script src="index.js"></script>
+	<script src="unitcricle.js"></script>
+	<script src="realtimeplotting.js"></script>
+</body>
+
+</html>
