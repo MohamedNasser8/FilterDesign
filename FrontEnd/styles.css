@@ -1,5 +1,5 @@
 html{
-    background-color: #212529;
+    background-color: #cccccc;
     font-family: "Open Sans";
     overflow-x: hidden;
 }
@@ -16,7 +16,7 @@ html{
 }
 .btn-cricle-control, .dropdown-check-list, .anchor{
     background-color: #212529;
-    color: #ededee;
+    color:  #cccccc;
     font-size: small;
     font-weight: 600;
     border: #212529;
@@ -56,13 +56,15 @@ html{
     display: block;
 }
 
-#filter-design, #all-pass, #real-time-filter{
+#filter-design{
     display: flex;
     flex-direction: row;
     column-gap: 10px;
 }
  #all-pass, #real-time-filter{
-    flex-direction: column;
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
     gap: 10px;
  }
 
@@ -74,15 +76,17 @@ html{
 .box {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* justify-content: center; */
     background-color: #2a2e32;
     border-radius: 8px;
     padding: 20px;
+    width: 100%;
 }
 
 #filter-response, #all-pass-response, #real-time-filter-plots, #real-time-filter-plots{
-    min-width: 60%;
-    flex-direction: column;
+    min-width: 70%;
+    min-height: 48%;
+    flex-direction: row;
     flex-wrap: nowrap;
     gap: 10px;
 }
@@ -93,6 +97,7 @@ html{
 
 #all-pass-response, #real-time-filter-plots{
     flex-direction: row;
+    width: 100%;
 }
 #circle-control{
     gap: 5px;
@@ -106,6 +111,7 @@ html{
     flex-direction: row;
     justify-content: center;
     gap: 5;
+    width: fit-content;
 }
 #all-pass-unit-circle, #real-time-filter-container{
     gap: 10px;
@@ -118,17 +124,21 @@ html{
 
 #circle-title, #all-pass-title{
     text-align: center;
-    color: #ededee;
+    color:  #ccdbda;
 }
 
 .freq-response-title, .title{
     margin: 0;
-    color: #ededee;
+    color:  #ccdbda;
+
+    text-align: center;
+    margin-bottom: 5px;
+
 }
 
 .btn{
     background-color: #212529;
-    color: #ededee;
+    color: #ccdbda;
     font-size: small;
     border: #212529;
     border-radius: 4px;
@@ -153,7 +163,7 @@ html{
 #new-value{
     max-width: 100px;
     background-color: #212529;
-    color: #ededee;
+    color:#ccdbda;
     font-size: small;
     border: #212529;
     padding: 10px;
@@ -182,7 +192,10 @@ html{
 }
 
 .response-plotting{
-    min-height:40vh;
+    height:30vh;
+    
+    /* max-width:120vh; */
+
 }
 
 #zero{

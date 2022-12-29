@@ -67,14 +67,14 @@ function plotlyMultiLinePlot(container, data){
             margin: { l: 30, r: 0, b: 30, t: 0 },
             xaxis: {
                 autorange: true,
-                tickfont: { color: '#cccccc' },
+                tickfont: { color: '#000000' },
             },
             yaxis: {
                 autorange: true,
-                tickfont: { color: '#cccccc' },
+                tickfont: { color: '#000000' },
             },
-            plot_bgcolor: '#111111',
-            paper_bgcolor: '#111111',
+            plot_bgcolor: '#cccccc',
+            paper_bgcolor: '#cccccc',
         },
         { staticPlot: true }
     )
