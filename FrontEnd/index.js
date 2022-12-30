@@ -1,10 +1,14 @@
 const filterDesignMagnitude = document.querySelector('#filter-mag-response')
 const filterDesignPhase = document.querySelector('#filter-phase-response')
+const allPassPhase = document.getElementById('all-pass-phase-response');
 const finalPhase = document.getElementById('final-filter-phase-response');
 const checkList = document.getElementById('list1');
 const zero_mode_btn = document.getElementById("zero")
 const pole_mode_btn = document.getElementById("pole")
 const modes_btns = [zero_mode_btn, pole_mode_btn]
+
+document.querySelector('#listOfA').addEventListener('input', updateAllPassCoeff)
+document.querySelector('#new-all-pass-coef').addEventListener('click', addNewA)
 
 
 clearCheckBoxes()
@@ -44,6 +48,13 @@ checkList.getElementsByClassName('anchor')[0].onclick = function () {
 async function updateFilterPhase(allPassCoeff){
     const { zeros, poles } = filter_plane.getZerosPoles(radius)
 
+    const { angels: allPassAngels } = await postData(
+        'http://127.0.0.1:8080/getAllPassFilter',
+        {
+            a: allPassCoeff,
+        }
+    )
+
     const { w, angels: finalFilterPhase } = await postData(
         'http://127.0.0.1:8080/getFinalFilter',
         {
@@ -52,10 +63,11 @@ async function updateFilterPhase(allPassCoeff){
             a: allPassCoeff,
         }
     )
-    updateFilterPlotting(w,  finalFilterPhase)
+    updateFilterPlotting(w,  allPassAngels, finalFilterPhase)
 }
 
-function updateFilterPlotting(w,  finalFilterPhase){
+function updateFilterPlotting(w,  allPassAngels, finalFilterPhase){
+    plotlyMultiLinePlot(allPassPhase, [{x: w, y: allPassAngels}])
     plotlyMultiLinePlot(finalPhase, [{x: w, y: finalFilterPhase}])
 }
 

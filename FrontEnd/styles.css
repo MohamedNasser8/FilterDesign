@@ -37,7 +37,7 @@ html{
 
 .dropdown-check-list ul.items {
     padding: 2px;
-    display: none;
+    /* display: none; */
     margin: 0;
     border-top: none;
 }
