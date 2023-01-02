@@ -8,7 +8,9 @@ let slider = document.getElementById("myRange");
 let output = document.getElementById("slider-value");
 let signal_x, signal_y
 let plotting_interval
-
+// const open = document.getElementById('open');
+// const modal_container = document.getElementByIdClassName('modal-container');
+// const close =document.getElementById('close');
 output.innerHTML = slider.value;
 let speed = Math.floor(1000/slider.value);
 
@@ -16,7 +18,31 @@ slider.oninput = function() {
     output.innerHTML = this.value;
     speed = Math.floor(1000/slider.value);
 }
+// Get the modal
+var modal = document.getElementById("myModal");
 
+// Get the button that opens the modal
+var btn = document.getElementById("open");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on the button, open the modal
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
 updateFilterDesign({zeros: [], poles: []})
 
 function getCol(matrix, col) {

@@ -1,15 +1,24 @@
-const filterDesignMagnitude = document.querySelector('#filter-mag-response')
-const filterDesignPhase = document.querySelector('#filter-phase-response')
+const filterDesignMagnitude = document.querySelector('#filter-mag-response');
+const filterDesignPhase = document.querySelector('#filter-phase-response');
 const allPassPhase = document.getElementById('all-pass-phase-response');
 const finalPhase = document.getElementById('final-filter-phase-response');
 const checkList = document.getElementById('list1');
-const zero_mode_btn = document.getElementById("zero")
-const pole_mode_btn = document.getElementById("pole")
-const modes_btns = [zero_mode_btn, pole_mode_btn]
+const zero_mode_btn = document.getElementById("zero");
+// const open = document.getElementById('open');
+// const modal_container = document.getElementsByClassName('modal-container');
+// const close =document.getElementById('close');
+const pole_mode_btn = document.getElementById("pole");
+const modes_btns = [zero_mode_btn, pole_mode_btn];
+document.querySelector('#listOfA').addEventListener('input', updateAllPassCoeff);
+document.querySelector('#new-all-pass-coef').addEventListener('click', addNewA);
 
-document.querySelector('#listOfA').addEventListener('input', updateAllPassCoeff)
-document.querySelector('#new-all-pass-coef').addEventListener('click', addNewA)
 
+// open.addEventListener('click', ()=>{
+//     modal_container.classList.add('visible');
+// });
+// close.addEventListener('click', ()=>{
+//     modal_container.classList.remove('visible');
+// });
 
 clearCheckBoxes()
 async function postData(url = '', data = {}) {
