@@ -9,6 +9,7 @@
 	<script src="lib/p5.min.js"></script>
 	<script src="lib/plotly-2.8.3.min.js"></script>
 	<script src="lib/notyf.min.js"></script>
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles.css" />
 	<link rel="stylesheet" type="text/css" href="lib/notfy.min.css" />
 </head>
@@ -62,6 +63,9 @@
 				<button id="new-all-pass-coef" class="btn">submit</button>
 			</div>
 			<button id="open">
+				Upload Signal
+			</button>
+			<button id="open2">
 				Show Real Time Filtering
 			</button>
 		</div>
@@ -104,8 +108,45 @@
 		</div>
 	</section>
 </div>
-	<script src="index.js"></script>
+<div id="myModal2" class="modal">
+	<section class="modal-content" id="real-time-filter">
+		<span class="close">&times;</span>
+		<div id="real-time-filter-container">
+			<div style="display: flex;">
+			<section class="container" style="width: 200px;">
+				<div style="display: none;" id="toolbar">
+					<h1>Draw.</h1>
+					<label for="stroke">Stroke</label>
+					<input id="stroke" name='stroke' type="color">
+					<label for="lineWidth">Line Width</label>
+					<input id="lineWidth" name='lineWidth' type="number" value="5">
+					<button id="clear">Clear</button>
+				</div>
+				<div class="drawing-board">
+					<canvas id="drawing-board"></canvas>
+				</div>
+		</section>
+
+		</div>
+		<div class="box" id="real-time-filter-plots">
+			<div class="half-plot-container" id="all-pass-response-container">
+				<h4 class="title" id="original-signal-title">Original Signal</h4>
+				<div class=".half-plot response-plotting" id="original-signal">
+					<div id="myDiv"></div></div>
+				</div>
+			</div>
+			<div id="all-pass-response-container">
+				<h4 class="title" id="filtered-signal-title">Filtered Signal</h4>
+				<div class=".half-plot response-plotting" id="filtered-signal"></div>
+			</div>
+		</div>
+	</section>
+</div>
+
+<script src="GenerateSignal.js"></script>
+<script src="index.js"></script>
 	<script src="unitcricle.js"></script>
+
 	<script src="realtimeplotting.js"></script>
 </body>
 
