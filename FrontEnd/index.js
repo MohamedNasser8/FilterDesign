@@ -4,21 +4,13 @@ const allPassPhase = document.getElementById('all-pass-phase-response');
 const finalPhase = document.getElementById('final-filter-phase-response');
 const checkList = document.getElementById('list1');
 const zero_mode_btn = document.getElementById("zero");
-// const open = document.getElementById('open');
-// const modal_container = document.getElementsByClassName('modal-container');
-// const close =document.getElementById('close');
+
 const pole_mode_btn = document.getElementById("pole");
 const modes_btns = [zero_mode_btn, pole_mode_btn];
 document.querySelector('#listOfA').addEventListener('input', updateAllPassCoeff);
 document.querySelector('#new-all-pass-coef').addEventListener('click', addNewA);
 
 
-// open.addEventListener('click', ()=>{
-//     modal_container.classList.add('visible');
-// });
-// close.addEventListener('click', ()=>{
-//     modal_container.classList.remove('visible');
-// });
 
 clearCheckBoxes()
 async function postData(url = '', data = {}) {
@@ -38,11 +30,23 @@ async function updateFilterDesign(data) {
     data.gain = 1
     let { w, angels, magnitude } = await postData(`${API}/getFilter`, data)
     plotlyMultiLinePlot(filterDesignMagnitude, [
-        { x: w, y: magnitude, line: { color: '#febc2c' } },
+        { x: w, y: magnitude, line: { color: '#4b6043' } },
     ])
     plotlyMultiLinePlot(filterDesignPhase, [
         { x: w, y: angels, line: { color: '#fd413c' } },
     ])
+}
+
+function addNewA() {
+    var newA = document.getElementById('new-value').value
+    if(newA > 1 || newA < -1){
+        alert(`invalid ${newA} as Filter Coefficient`)
+        return
+    }
+    document.getElementById(
+        'listOfA'
+    ).innerHTML += `<li><input class = "target1" type="checkbox" data-avalue="${newA}"/>${newA}</li>`
+    clearCheckBoxes()
 }
 
 checkList.getElementsByClassName('anchor')[0].onclick = function () {
@@ -88,7 +92,7 @@ function plotlyMultiLinePlot(container, data){
             margin: { l: 30, r: 0, b: 30, t: 0 },
             xaxis: {
                 autorange: true,
-                tickfont: { color: '#000000' },
+                tickfont: { color: '#00FF00' },
             },
             yaxis: {
                 autorange: true,

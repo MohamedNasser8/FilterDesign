@@ -40,6 +40,7 @@ html{
     /* display: none; */
     margin: 0;
     border-top: none;
+    background-color: 4b6043;
 }
 
 .dropdown-check-list ul.items li {
@@ -73,11 +74,14 @@ html{
     height: 100%;
 }
 
+#real-time-title{
+    color: #212529;
+}
 .box {
     display: flex;
     flex-direction: column;
     /* justify-content: center; */
-    background-color: #2a2e32;
+    background-color: #1c2219;
     border-radius: 8px;
     padding: 20px;
     width: 100%;
@@ -172,7 +176,7 @@ html{
 
 #all-pass-response-container , .half-plot-container{
     min-width: 48%;
-    max-height: 48%;
+    max-height: 80%;
 }
 
 #all-pass-response-title, #final-filter-response-title{
@@ -237,4 +241,4 @@ html{
     color: black;
     text-decoration: none;
     cursor: pointer;
-  }
+  } 
