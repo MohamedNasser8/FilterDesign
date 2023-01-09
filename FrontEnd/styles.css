@@ -43,8 +43,10 @@
     background-color: 4b6043;
 } */
 
+
 .dropdown-check-list ul.items li {
     list-style: none;
+    color: #fefefe;
 }
 
 .dropdown-check-list.visible .anchor {
@@ -74,21 +76,24 @@
     height: 100%;
 }
 
-#real-time-title{
-    color: #212529;
-}
+
 .box {
     display: flex;
-    flex-direction: column;
-    /* justify-content: center; */
-    background-color: #1c2219;
+    flex-direction: row;
+    justify-content: center;
+    background-color: #2a2e32;
     border-radius: 8px;
     padding: 20px;
-    width: 100%;
 }
-
-#filter-response, #all-pass-response, #real-time-filter-plots, #real-time-filter-plots{
+#filter-response, #real-time-filter-plots, #real-time-filter-plots{
     min-width: 70%;
+    min-height: 48%;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
+#all-pass-response{
+    min-width: 36%;
     min-height: 48%;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -96,12 +101,15 @@
 }
 
 #final-filter-response{
-    min-width: 50%;
+    min-width: 90%;
+}
+#all-pass-container{
+    min-width: 90%;
 }
 
 #all-pass-response, #real-time-filter-plots{
     flex-direction: row;
-    width: 100%;
+    /* width: 100%; */
 }
 #circle-control{
     gap: 5px;
@@ -116,6 +124,15 @@
     justify-content: center;
     gap: 5;
     width: fit-content;
+}
+#coeff{
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    gap: 5;
+    min-width: 20%;
 }
 #all-pass-unit-circle, #real-time-filter-container{
     gap: 10px;

@@ -92,7 +92,7 @@ function plotlyMultiLinePlot(container, data){
             margin: { l: 30, r: 0, b: 30, t: 0 },
             xaxis: {
                 autorange: true,
-                tickfont: { color: '#00FF00' },
+                tickfont: { color: '#000000' },
             },
             yaxis: {
                 autorange: true,
@@ -133,3 +133,14 @@ function changeMode(e){
         btn.style.color = (btn !== e.target) ? "#fff" : "#febc2c";
     }
 }
+// btn =document.getElementById("toggle-all-pass")
+// btn.addEventListener('click', () => {
+//     all_pass_sec = document.getElementById("all-pass")
+//     console.log(        all_pass_sec.style.display )
+//     if(all_pass_sec.style.display = 'none'){
+//         all_pass_sec.style.display = 'hide'
+//     }else{
+//         all_pass_sec.style.display = 'none'
+//     }
+//   })
+

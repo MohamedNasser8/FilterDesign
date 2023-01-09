@@ -357,13 +357,7 @@ document
     .querySelector('#remove-all')
     .addEventListener('click', () => filter_plane.removeAll())
 
-document
-    .querySelector('#remove-zeros')
-    .addEventListener('click', () => filter_plane.removeZeros())
 
-document
-    .querySelector('#remove-poles')
-    .addEventListener('click', () => filter_plane.removePoles())
 
 document
     .querySelector('#remove')
