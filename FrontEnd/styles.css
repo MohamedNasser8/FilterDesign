@@ -84,6 +84,7 @@
     background-color: #2a2e32;
     border-radius: 8px;
     padding: 20px;
+    margin-bottom:10px ;
 }
 #filter-response, #real-time-filter-plots, #real-time-filter-plots{
     min-width: 70%;
