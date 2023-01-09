@@ -116,6 +116,7 @@ function equateLength(a, b) {
  *                        Y[n] = Σ b[m].X[n-m] - Σ a[m].Y[n-m]
  * -------------------------------------------------------------------------------------
  */
+let y_filtterd = [];
 function filter(a, b, n, x, y) {
   let filter_order = Math.max(a.length, b.length);
   if (a.length != b.length) equateLength(a, b);
@@ -125,7 +126,8 @@ function filter(a, b, n, x, y) {
   for (let m = 1; m < filter_order; m++) {
     y_n += b[m] * x[n - m] - a[m] * y[n - m];
   }
-
+  if (!y_n) y_filtterd.push(0);
+  else y_filtterd.push(y_n);
   return y_n;
 }
 
@@ -248,3 +250,180 @@ function updateBtnsState(plotting) {
 }
 
 updateBtnsState((plotting = false));
+
+const canvas = document.getElementById("drawing-board");
+const toolbar = document.getElementById("toolbar");
+const ctx = canvas.getContext("2d");
+
+const canvasOffsetX = canvas.offsetLeft;
+const canvasOffsetY = canvas.offsetTop;
+var graphDiv = document.getElementById("myDiv");
+canvas.width = window.innerWidth - canvasOffsetX;
+canvas.height = window.innerHeight - canvasOffsetY;
+let isdown = false;
+var data = [
+  {
+    x: [0],
+    y: [0],
+    mode: "lines",
+    line: {
+      shape: "spline",
+      color: "#febc2c",
+    },
+  },
+];
+
+var filtter_data = [
+  {
+    x: [0],
+    y: [0],
+    mode: "lines",
+    line: {
+      shape: "spline",
+      color: "#fd413c",
+    },
+  },
+];
+var layout = {
+  yaxis: { range: [-1, 2.5] },
+  plot_bgcolor: "#111111",
+  paper_bgcolor: "#111111",
+};
+Plotly.newPlot(graphDiv, data, layout);
+Plotly.newPlot("filtered", filtter_data, layout);
+let isPainting = false;
+let lineWidth = 0;
+let startX;
+let startY;
+
+toolbar.addEventListener("click", (e) => {
+  if (e.target.id === "clear") {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+});
+
+toolbar.addEventListener("change", (e) => {
+  if (e.target.id === "color") {
+  }
+  if (e.target.id === "stroke") {
+    ctx.strokeStyle = e.target.value;
+  }
+
+  if (e.target.id === "lineWidth") {
+    lineWidth = e.target.value;
+  }
+});
+let d0 = new Date();
+t = [];
+g = [];
+mag = [];
+const draw = (e) => {
+  if (!isPainting) {
+    return;
+  }
+  const d = new Date();
+  t.push(
+    d.getMinutes() * 60000 +
+      d.getSeconds() * 1000 +
+      d.getMilliseconds() -
+      (d0.getMilliseconds() + d0.getSeconds() * 1000 + d0.getMinutes() * 60000)
+  );
+  mag.push(e.clientY);
+
+  realTime(t[t.length - 1], mag[mag.length - 1]);
+  //console.log(e.clientX, e.clientY);
+  ctx.lineWidth = lineWidth;
+  ctx.lineCap = "round";
+
+  ctx.lineTo(e.clientX - canvasOffsetX, e.clientY);
+  ctx.stroke();
+};
+let Z = 1,
+  P = 1,
+  A = 1,
+  B = 1;
+canvas.addEventListener("mousedown", async function begin(e) {
+  let { zeros, poles } = filter_plane.getZerosPoles(radius);
+  Z = zeros;
+  P = poles;
+  isPainting = true;
+  if (Z.length === 0 && P.length === 0) {
+    notyf.error("No filter designed");
+    return;
+  }
+  [A, B] = await get_differenceEquationCoefficients(zeros, poles);
+  y_filtterd = t.slice(0, A.length);
+  console.log(A, B);
+
+  t = [0];
+  mag = [0];
+  isdown = true;
+  try {
+    console.log(graphDiv.data.length);
+  } catch {
+    console.log("can not delete traces");
+  }
+  console.log(Plotly);
+  isPainting = true;
+  startX = e.clientX;
+  startY = e.clientY;
+
+  d0 = new Date();
+  console.log("down");
+  Plotly.addTraces("filtered", filtter_data);
+  Plotly.addTraces("myDiv", data);
+  console.log(graphDiv.data.length);
+});
+
+canvas.addEventListener("mouseup", (e) => {
+  isdown = false;
+  isPainting = false;
+  Plotly.deleteTraces("myDiv", 0);
+  Plotly.deleteTraces("filtered", 0);
+  ctx.stroke();
+  ctx.beginPath();
+
+  console.log("up");
+});
+canvas.addEventListener("mousemove", draw);
+
+let cnt = 1;
+function realTime(x, y) {
+  //t.push(x);
+  //mag.push(y);
+  x /= 1000;
+  dx = t[t.length - 1] - t[t.length - 2];
+  if (cnt == 1) {
+    (x = 0), (y = 0);
+  }
+  let update = {
+    x: [[t[t.length - 1]]],
+    y: [[y]],
+  };
+
+  let update_filterd = {
+    x: [[t[t.length - 1]]],
+    y: [[filter(A, B, t.length - 1, mag, y_filtterd)]],
+  };
+
+  console.log(filter(A, B, t.length - 1, mag, y_filtterd), y);
+  let minuteView = {
+    xaxis: {
+      range: [t[t.length] - dx, t[t.length] - dx],
+    },
+    yaxis: { rangemode: "tozero", autorange: true },
+  };
+
+  Plotly.relayout("filtered", minuteView);
+  Plotly.extendTraces("filtered", update_filterd, [0]);
+  Plotly.relayout("myDiv", minuteView);
+  Plotly.extendTraces("myDiv", update, [0]);
+  if (!t[cnt]) {
+    y.push(10);
+  }
+  cnt++;
+  if (isdown == false) {
+    clearInterval(plotting_interval);
+    cnt = 1;
+  }
+}
