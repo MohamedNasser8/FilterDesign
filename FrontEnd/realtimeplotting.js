@@ -331,7 +331,7 @@ const draw = (e) => {
   mag.push(e.clientY);
 
   realTime(t[t.length - 1], mag[mag.length - 1]);
-  //console.log(e.clientX, e.clientY);
+  console.log(e.clientX, e.clientY);
   ctx.lineWidth = lineWidth;
   ctx.lineCap = "round";
 
@@ -349,7 +349,6 @@ canvas.addEventListener("mousedown", async function begin(e) {
   isPainting = true;
   if (Z.length === 0 && P.length === 0) {
     notyf.error("No filter designed");
-    return;
   }
   [A, B] = await get_differenceEquationCoefficients(zeros, poles);
   y_filtterd = t.slice(0, A.length);
@@ -378,8 +377,13 @@ canvas.addEventListener("mousedown", async function begin(e) {
 canvas.addEventListener("mouseup", (e) => {
   isdown = false;
   isPainting = false;
-  Plotly.deleteTraces("myDiv", 0);
-  Plotly.deleteTraces("filtered", 0);
+  console.log(Plotly);
+  try {
+    Plotly.deleteTraces("myDiv", 0);
+    Plotly.deleteTraces("filtered", 0);
+  } catch {
+    console.log(Plotly);
+  }
   ctx.stroke();
   ctx.beginPath();
 
@@ -405,8 +409,8 @@ function realTime(x, y) {
     x: [[t[t.length - 1]]],
     y: [[filter(A, B, t.length - 1, mag, y_filtterd)]],
   };
-
-  console.log(filter(A, B, t.length - 1, mag, y_filtterd), y);
+  console.log(x, y);
+  //  console.log(filter(A, B, t.length - 1, mag, y_filtterd), y);
   let minuteView = {
     xaxis: {
       range: [t[t.length] - dx, t[t.length] - dx],
