@@ -47,14 +47,14 @@
 	<br />
 
 	<section id="all-pass">
-		<div class="box" id="coeff">
-			<div id="all-pass-container">
-				<div id="list1" class="dropdown-check-list" tabindex="100">
+		<div class="box"  id="coeff">
+			<div id="all-pass-container"  style="margin: auto; margin-left:40%">
+				<div id="list1" class="dropdown-check-list"  tabindex="100">
 					<span class="anchor btn">All Pass Filter Coefficients</span>
 					<ul id="listOfA" class="items">
 						<li><input class="target1" type="checkbox" data-avalue="-0.9" />-0.9 </li>
 						<li><input class="target1" type="checkbox" data-avalue="-0.495" />-0.495</li>
-						<li><input class="target1" type="checkbox" data-avalue="0.0" />0.0</li>
+						<li><input class="target1" type="checkbox" data-avalue="0.0"  />0.0</li>
 						<li><input class="target1" type="checkbox" data-avalue="0.49499" />0.49499</li>
 						<li><input class="target1" type="checkbox" data-avalue="0.99" />0.99</li>
 					</ul>
@@ -77,7 +77,7 @@
 			</div>
 
 		</div>
-
+		 
 		<div class="box" id="all-pass-response">
 
 			<div id="final-filter-response">
@@ -105,6 +105,8 @@
 				<h4 class="title" id="original-signal-title">Original Signal</h4>
 				<div class=".half-plot response-plotting" id="original-signal"></div>
 			</div>
+			<div style="width: 10px;"></div>
+
 			<div id="all-pass-response-container">
 				<h4 class="title" id="filtered-signal-title">Filtered Signal</h4>
 				<div class=".half-plot response-plotting" id="filtered-signal"></div>
@@ -148,12 +150,18 @@
 	<div class="drawing-board">
 		<canvas style="width: 100%; height:100%;" id="drawing-board"></canvas>
 	</div>
+</div>
 </section>
+<!-- <div class="box" > -->
+	<div style="width: 30px;"></div>
 <div style="display: flex;">
-<div id="myDiv" style="width: 300px; height:300px;"></div>
-<div id="filtered" style="width: 300px; height:300px;"></div>
+<div id="myDiv" style="width: 700px; height:300px;"></div>
+<div style="width: 30px;"></div>
+
+<div id="filtered" style="width: 700px; height:300px;"></div>
 </div>
 </div>
+<!-- </div> -->
 <script src="index.js"></script>
 	<script src="unitcricle.js"></script>
 
