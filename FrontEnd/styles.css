@@ -78,12 +78,24 @@
 
 
 .box {
+    height: 395px;
     display: flex;
     flex-direction: row;
     justify-content: center;
     background-color: #2a2e32;
     border-radius: 8px;
     padding: 20px;
+    margin-bottom:10px ;
+}
+.btn-box {
+    /* height: 400px; */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    background-color: #2a2e32;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom:10px ;
 }
 #filter-response, #real-time-filter-plots, #real-time-filter-plots{
     min-width: 70%;

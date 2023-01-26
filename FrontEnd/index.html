@@ -41,10 +41,19 @@
 		</div>
 		</div>
 	</section>
-	<button  class="box" id="toggle-all-pass" >
-		<h2 id="all-pass-title" class="title">All Pass Filter Design</h2>
+	
+	<div class="btn-box"  style="gap: 5px;">
+	<button class="btn-cricle-control"  id="toggle-all-pass" >
+		All Pass Filter Design
 	</button>
-	<br />
+	<button  class="btn-cricle-control" id="toggle-upload" >
+		Upload Signal
+	</button>
+	<button  class="btn-cricle-control" id="toggle-real" >
+		Drawing Window
+	</button>
+	</div>
+
 
 	<section id="all-pass">
 		<div class="box"  id="coeff">
@@ -86,9 +95,9 @@
 			</div>
 				</div>
 	</section>
-<br />
 
-	<section  id="real-time-filter">
+
+	<section  id="real-time-filter" style="display: none;">
 		
 		<div class="box" id="real-time-filter-container">
 			<h2 id="real-time-title" class="title">Real Time Filtering</h2>
@@ -114,7 +123,7 @@
 		</div>
 
 	</section>
-	<br />
+
 
 <div id="myModal2" class="modal">
 	<section class="modal-content" id="real-time-filter">
@@ -136,7 +145,7 @@
 	</section>
 </div>
 
-<div class="box">
+<div class="box" id="draw-window" style="display: none;">
 <div style="display: flex;">
 <section class="container" style="width: 300px; height:300px;">
 	<div style="display: none;" id="toolbar">
@@ -147,18 +156,19 @@
 		<input id="lineWidth" name='lineWidth' type="number" value="5">
 		<button id="clear">Clear</button>
 	</div>
-	<div class="drawing-board">
-		<canvas style="width: 100%; height:100%;" id="drawing-board"></canvas>
+	<div class="drawing-board" >
+		<canvas style="width: 100%; height:400px;" id="drawing-board"></canvas>
 	</div>
 </div>
 </section>
 <!-- <div class="box" > -->
 	<div style="width: 30px;"></div>
 <div style="display: flex;">
-<div id="myDiv" style="width: 700px; height:300px;"></div>
+<div id="myDiv" style="width: 700px; height:375px;"></div>
 <div style="width: 30px;"></div>
 
-<div id="filtered" style="width: 700px; height:300px;"></div>
+<div id="filtered" style="width: 700px; height:375px;"></div>
+</div>
 </div>
 </div>
 <!-- </div> -->
