@@ -4,28 +4,10 @@ import scipy
 import scipy.signal
 
 from flask_cors import CORS, cross_origin
-
 app = Flask(__name__)
 CORS(app)
-
-def frequencyResponse(zeros, poles, gain):
-    w, h = scipy.signal.freqz_zpk(zeros, poles, gain)
-    magnitude = 20 * np.log10(np.abs(h))
-    angels = np.unwrap(np.angle(h))
-    return w/max(w), np.around(angels, decimals=3), np.around(magnitude, decimals=3)
-
-def phaseResponse(a):
-    w, h = scipy.signal.freqz([-a, 1.0], [1.0, -a])
-    angels = np.zeros(512) if a==1 else np.unwrap(np.angle(h))
-    return w/max(w), np.around(angels, decimals=3)
-
-def parseToComplex(pairs):
-    complexNumbers = [0]*len(pairs)
-    for i in range(len(pairs)):
-        x = round(pairs[i][0], 2)
-        y = round(pairs[i][1], 2)
-        complexNumbers[i] = x+ y*1j
-    return complexNumbers
+  
+Filter = None
 
 @app.route('/getFinalFilter', methods=['POST', 'GET'])
 @cross_origin()
@@ -57,8 +39,6 @@ def getFinalFilter():
 def getFrequencyResponce():
     if request.method == 'POST':
         zerosAndPoles = json.loads(request.data)
-        zeros = parseToComplex(zerosAndPoles['zeros'])
-        poles = parseToComplex(zerosAndPoles['poles'])
         gain = zerosAndPoles['gain']
         print(zeros, poles, gain)
 
