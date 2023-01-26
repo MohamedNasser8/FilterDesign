@@ -9,6 +9,7 @@
 	<script src="lib/p5.min.js"></script>
 	<script src="lib/plotly-2.8.3.min.js"></script>
 	<script src="lib/notyf.min.js"></script>
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles.css" />
 	<link rel="stylesheet" type="text/css" href="lib/notfy.min.css" />
 </head>
@@ -16,29 +17,88 @@
 <body>
 	<section id="filter-design">
 		<div class="box" id="design-unit-circle">
-			<h2 id="circle-title">Digital Filter Design</h2>
-			<div id="circle-canvas"></div>
 			<div id="circle-control">
+				<h2 id="circle-title">Digital Filter Design</h2>
+
 				<button id="zero" class="btn-cricle-control mode-control">Add Zeros</button>
 				<button id="pole" class="btn-cricle-control mode-control">Add Poles</button>
 				<button id="remove" class="btn-cricle-control">Remove</button>
-				<button id="remove-zeros" class="btn-cricle-control">Remove Zeros</button>
-				<button id="remove-poles" class="btn-cricle-control">Remove Poles</button>
 				<button id="remove-all" class="btn-cricle-control">Remove All</button>
-
 			</div>
+			<div id="circle-canvas"></div>
+		
 		</div>
-
 		<div class="box" id="filter-response">
+			<div id="all-pass-response-container">
+
 			<h4 class="freq-response-title title">Magnitude Response</h4>
 			<div id="filter-mag-response" class="response-plotting"> </div>
-			<h4 class="freq-response-title title">Phase Response</h2>
+		</div>
+		<div id="all-pass-response-container">
+			<h4 class="freq-response-title title">Phase Response</h4>
 				<div id="filter-phase-response" class="response-plotting"> </div>
+	
+		</div>
 		</div>
 	</section>
+	
+	<div class="btn-box"  style="gap: 5px;">
+	<button class="btn-cricle-control"  id="toggle-all-pass" >
+		All Pass Filter Design
+	</button>
+	<button  class="btn-cricle-control" id="toggle-upload" >
+		Upload Signal
+	</button>
+	<button  class="btn-cricle-control" id="toggle-real" >
+		Drawing Window
+	</button>
+	</div>
 
-	<br />
-	<section id="real-time-filter">
+
+	<section id="all-pass">
+		<div class="box"  id="coeff">
+			<div id="all-pass-container"  style="margin: auto; margin-left:40%">
+				<div id="list1" class="dropdown-check-list"  tabindex="100">
+					<span class="anchor btn">All Pass Filter Coefficients</span>
+					<ul id="listOfA" class="items">
+						<li><input class="target1" type="checkbox" data-avalue="-0.9" />-0.9 </li>
+						<li><input class="target1" type="checkbox" data-avalue="-0.495" />-0.495</li>
+						<li><input class="target1" type="checkbox" data-avalue="0.0"  />0.0</li>
+						<li><input class="target1" type="checkbox" data-avalue="0.49499" />0.49499</li>
+						<li><input class="target1" type="checkbox" data-avalue="0.99" />0.99</li>
+					</ul>
+				</div>
+				<input range="0-9" min="-1" max="1" type="number" step="0.01" id="new-value" value="">
+				<button id="new-all-pass-coef" class="btn">submit</button>
+			</div>
+			<button id="open" style="display: none;">
+				Upload Signal
+			</button>
+			<button id="open2" style="display: none;">
+				Show Real Time Filtering
+			</button>
+		</div>
+
+		<div class="box" id="all-pass-response">
+			<div id="all-pass-container">
+				<h4 class="title" id="all-pass-response-title">All Pass Phase Response</h4>
+				<div id="all-pass-phase-response" class="response-plotting"> </div>
+			</div>
+
+		</div>
+		 
+		<div class="box" id="all-pass-response">
+
+			<div id="final-filter-response">
+				<h4 id="final-filter-response-title" class="title">Final Phase Response</h4>
+				<div id="final-filter-phase-response" class="response-plotting"> </div>
+			</div>
+				</div>
+	</section>
+
+
+	<section  id="real-time-filter" style="display: none;">
+		
 		<div class="box" id="real-time-filter-container">
 			<h2 id="real-time-title" class="title">Real Time Filtering</h2>
 			<input class="btn" type="file" id="csvFile" accept=".csv" />
@@ -46,23 +106,75 @@
 			<button class="btn" value="Stop" id="stop-filtering">Stop</button>
 			<input type="range" min="1" max="100" value="1" class="slider" id="myRange">
 			<p id="slider-value"></p>
-
 		</div>
+
+
 		<div class="box" id="real-time-filter-plots">
 			<div class="half-plot-container" id="all-pass-response-container">
 				<h4 class="title" id="original-signal-title">Original Signal</h4>
-				<div class=".half-plot " id="original-signal"></div>
+				<div class=".half-plot response-plotting" id="original-signal"></div>
 			</div>
+			<div style="width: 10px;"></div>
+
 			<div id="all-pass-response-container">
 				<h4 class="title" id="filtered-signal-title">Filtered Signal</h4>
-				<div class=".half-plot" id="filtered-signal"></div>
+				<div class=".half-plot response-plotting" id="filtered-signal"></div>
 			</div>
 		</div>
+
 	</section>
 
 
-	<script src="index.js"></script>
+<div id="myModal2" class="modal">
+	<section class="modal-content" id="real-time-filter">
+		<span class="close">&times;</span>
+		<div id="real-time-filter-container">
+			
+		<div class="box" id="real-time-filter-plots">
+			<div class="half-plot-container" id="all-pass-response-container">
+				<h4 class="title" id="original-signal-title">Original Signal</h4>
+				<div class=".half-plot response-plotting" id="original-signal">
+					</div>
+				</div>
+			</div>
+			<div id="all-pass-response-container">
+				<h4 class="title" id="filtered-signal-title">Filtered Signal</h4>
+				<div class=".half-plot response-plotting" id="filtered-signal"></div>
+			</div>
+		</div>
+	</section>
+</div>
+
+<div class="box" id="draw-window" style="display: none;">
+<div style="display: flex;">
+<section class="container" style="width: 300px; height:300px;">
+	<div style="display: none;" id="toolbar">
+		<h1>Draw.</h1>
+		<label for="stroke">Stroke</label>
+		<input id="stroke" name='stroke' type="color">
+		<label for="lineWidth">Line Width</label>
+		<input id="lineWidth" name='lineWidth' type="number" value="5">
+		<button id="clear">Clear</button>
+	</div>
+	<div class="drawing-board" >
+		<canvas style="width: 100%; height:400px;" id="drawing-board"></canvas>
+	</div>
+</div>
+</section>
+<!-- <div class="box" > -->
+	<div style="width: 30px;"></div>
+<div style="display: flex;">
+<div id="myDiv" style="width: 700px; height:375px;"></div>
+<div style="width: 30px;"></div>
+
+<div id="filtered" style="width: 700px; height:375px;"></div>
+</div>
+</div>
+</div>
+<!-- </div> -->
+<script src="index.js"></script>
 	<script src="unitcricle.js"></script>
+
 	<script src="realtimeplotting.js"></script>
 </body>
 

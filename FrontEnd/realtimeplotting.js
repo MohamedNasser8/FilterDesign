@@ -1,65 +1,96 @@
-const notyf = new Notyf()
+const notyf = new Notyf();
 
-const submit_btn = document.getElementById('csv-submitter')
-const stop_btn = document.getElementById('stop-filtering')
-const csvFile = document.getElementById('csvFile')
-const button = document.getElementById('sent_zeros_poles')
+const submit_btn = document.getElementById("csv-submitter");
+const stop_btn = document.getElementById("stop-filtering");
+const csvFile = document.getElementById("csvFile");
+const button = document.getElementById("sent_zeros_poles");
 let slider = document.getElementById("myRange");
 let output = document.getElementById("slider-value");
-let signal_x, signal_y
-let plotting_interval
-
+let signal_x, signal_y;
+let plotting_interval;
+// const open = document.getElementById('open');
+// const modal_container = document.getElementByIdClassName('modal-container');
+// const close =document.getElementById('close');
 output.innerHTML = slider.value;
-let speed = Math.floor(1000/slider.value);
+let speed = Math.floor(1000 / slider.value);
 
-slider.oninput = function() {
-    output.innerHTML = this.value;
-    speed = Math.floor(1000/slider.value);
-}
+slider.oninput = function () {
+  output.innerHTML = this.value;
+  speed = Math.floor(1000 / slider.value);
+};
+// Get the modal
+var modal = document.getElementById("myModal");
+var modal2 = document.getElementById("myModal2");
 
-updateFilterDesign({zeros: [], poles: []})
+// Get the button that opens the modal
+var btn = document.getElementById("open");
+var btn2 = document.getElementById("open2");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on the button, open the modal
+btn.onclick = function () {
+  modal.style.display = "block";
+};
+btn2.onclick = function () {
+  modal2.style.display = "block";
+};
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function () {
+  modal.style.display = "none";
+};
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function (event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+};
+updateFilterDesign({ zeros: [], poles: [] });
 
 function getCol(matrix, col) {
-    var column = []
-    for (var i = 0; i < matrix.length; i++) {
-        column.push(matrix[i][col])
-    }
-    return column
+  var column = [];
+  for (var i = 0; i < matrix.length; i++) {
+    column.push(matrix[i][col]);
+  }
+  return column;
 }
 
 async function readData() {
-    const input = csvFile.files[0]
-    const df = await dfd.read_csv(input)
-    signal_x = getCol(df.values, 0)
-    signal_y = getCol(df.values, 1)
-    return [signal_x, signal_y]
+  const input = csvFile.files[0];
+  const df = await dfd.read_csv(input);
+  signal_x = getCol(df.values, 0);
+  signal_y = getCol(df.values, 1);
+  return [signal_x, signal_y];
 }
 
 async function get_differenceEquationCoefficients(zeros, poles) {
-    const {a, b} = await postData(`${API}/differenceEquationCoefficients`, {
-        zeros: zeros,
-        poles: poles,
-    });
-    equateLength(a, b);
-    return [a, b]
+  const { a, b } = await postData(`${API}/differenceEquationCoefficients`, {
+    zeros: zeros,
+    poles: poles,
+  });
+  equateLength(a, b);
+  return [a, b];
 }
 
-csvFile.addEventListener('change', () => {
-    readData()
-})
+csvFile.addEventListener("change", () => {
+  readData();
+});
 
-stop_btn.addEventListener('click', () => {
-    clearInterval(plotting_interval)
-    updateBtnsState((plotting = false))
-})
+stop_btn.addEventListener("click", () => {
+  clearInterval(plotting_interval);
+  updateBtnsState((plotting = false));
+});
 
-function equateLength(a, b){
-    max_length = Math.max(a.length, b.length)
-    for(let i = 0; i < max_length; i++){
-        a[i] = i < a.length ? a[i] : 0
-        b[i] = i < b.length ? b[i] : 0
-    }
-    return [a, b]
+function equateLength(a, b) {
+  max_length = Math.max(a.length, b.length);
+  for (let i = 0; i < max_length; i++) {
+    a[i] = i < a.length ? a[i] : 0;
+    b[i] = i < b.length ? b[i] : 0;
+  }
+  return [a, b];
 }
 
 /**
@@ -80,131 +111,323 @@ function equateLength(a, b){
  *    H[z] = -------- = --------------- = ---------------------------------, a0 = 1
  *             X[z]       Σ a[n].z^-n       1 + a1.z^-1 + .... + aN.z^-N
  *
- *                                𝗗𝗶𝗳𝗳𝗲𝗿𝗲𝗻𝗰𝗲 𝗘𝗾𝘂𝗮𝘁𝗶𝗼𝗻 
+ *                                𝗗𝗶𝗳𝗳𝗲𝗿𝗲𝗻𝗰𝗲 𝗘𝗾𝘂𝗮𝘁𝗶𝗼𝗻
  *
  *                        Y[n] = Σ b[m].X[n-m] - Σ a[m].Y[n-m]
  * -------------------------------------------------------------------------------------
  */
+let y_filtterd = [];
 function filter(a, b, n, x, y) {
-    let filter_order = Math.max(a.length, b.length)
-    if(a.length != b.length) equateLength(a, b)
-    if (n < filter_order) return y[n]
+  let filter_order = Math.max(a.length, b.length);
+  if (a.length != b.length) equateLength(a, b);
+  if (n < filter_order) return y[n];
 
-    let y_n = b[0]*x[n]
-    for (let m = 1; m < filter_order; m++) {
-        y_n += b[m]*x[n-m] - a[m]*y[n-m]
-    }
-
-    return y_n
+  let y_n = b[0] * x[n];
+  for (let m = 1; m < filter_order; m++) {
+    y_n += b[m] * x[n - m] - a[m] * y[n - m];
+  }
+  if (!y_n) y_filtterd.push(0);
+  else y_filtterd.push(y_n);
+  return y_n;
 }
 
-submit_btn.addEventListener('click', async function (e) {
-    e.preventDefault()
+submit_btn.addEventListener("click", async function (e) {
+  e.preventDefault();
 
-    const {zeros, poles} = filter_plane.getZerosPoles(radius)
-    if (zeros.length === 0 && poles.length === 0) {
-        notyf.error('No filter designed');
-        return
-    }
-    const [a, b] = await get_differenceEquationCoefficients(zeros, poles)
+  const { zeros, poles } = filter_plane.getZerosPoles(radius);
+  if (zeros.length === 0 && poles.length === 0) {
+    notyf.error("No filter designed");
+    return;
+  }
+  const [a, b] = await get_differenceEquationCoefficients(zeros, poles);
 
-    let x = signal_x[0], y = signal_y[0]
-    let dx = signal_x[2] - signal_x[1]
-    let y_filtterd = signal_y.slice(0, a.length)
-    console.log(y_filtterd)
+  let x = signal_x[0],
+    y = signal_y[0];
+  let dx = signal_x[2] - signal_x[1];
+  let y_filtterd = signal_y.slice(0, a.length);
+  console.log(y_filtterd);
 
-    var data = [
-        {
-            x: [x],
-            y: [y],
-            mode: 'lines',
-            line: { color: '#febc2c' },
-        },
-    ]
-    var layout = {
-        yaxis: { range: [-1, 2.5] },
-        plot_bgcolor: "#111111",
-        paper_bgcolor: "#111111"
-    }
+  var data = [
+    {
+      x: [x],
+      y: [y],
+      mode: "lines",
+      line: { color: "#febc2c" },
+    },
+  ];
+  var layout = {
+    yaxis: { range: [-1, 2.5] },
+    plot_bgcolor: "#111111",
+    paper_bgcolor: "#111111",
+  };
 
-    var filtter_data = [
-        {
-            x: [x],
-            y: [y_filtterd[0]],
-            mode: 'lines',
-            line: { color: '#fd413c' },
-        },
-    ]
+  var filtter_data = [
+    {
+      x: [x],
+      y: [y_filtterd[0]],
+      mode: "lines",
+      line: { color: "#fd413c" },
+    },
+  ];
 
-    updateBtnsState((plotting = true))
-    Plotly.newPlot('original-signal', data, layout)
-    Plotly.newPlot('filtered-signal', filtter_data, layout)
-    realTimePlotting(y_filtterd, dx, a, b)
-})
+  updateBtnsState((plotting = true));
+  Plotly.newPlot("original-signal", data, layout);
+  Plotly.newPlot("filtered-signal", filtter_data, layout);
+  realTimePlotting(y_filtterd, dx, a, b);
+});
 
 function realTimePlotting(y_filtterd, dx, a, b) {
-    let cnt = 1
-    plotting_interval = setInterval(function () {
-        y_filtterd[cnt] = filter(a, b, cnt, signal_y, y_filtterd)
+  let cnt = 1;
+  plotting_interval = setInterval(function () {
+    y_filtterd[cnt] = filter(a, b, cnt, signal_y, y_filtterd);
 
-        let update = {
-            x: [[signal_x[cnt]]],
-            y: [[signal_y[cnt]]],
-        }
-        let update_filterd = {
-            x: [[signal_x[cnt]]],
-            y: [[y_filtterd[cnt]]],
-        }
+    let update = {
+      x: [[signal_x[cnt]]],
+      y: [[signal_y[cnt]]],
+    };
+    let update_filterd = {
+      x: [[signal_x[cnt]]],
+      y: [[y_filtterd[cnt]]],
+    };
 
-        let minuteView = {
-            xaxis: {
-                range: [signal_x[cnt] - dx, signal_x[cnt] - dx],
-            },
-            yaxis: { rangemode:'tozero', autorange:true}
-        }
+    let minuteView = {
+      xaxis: {
+        range: [signal_x[cnt] - dx, signal_x[cnt] - dx],
+      },
+      yaxis: { rangemode: "tozero", autorange: true },
+    };
 
-        Plotly.relayout('filtered-signal', minuteView)
-        Plotly.extendTraces('filtered-signal', update_filterd, [0])
+    Plotly.relayout("filtered-signal", minuteView);
+    Plotly.extendTraces("filtered-signal", update_filterd, [0]);
 
-        Plotly.relayout('original-signal', minuteView)
-        Plotly.extendTraces('original-signal', update, [0])
+    Plotly.relayout("original-signal", minuteView);
+    Plotly.extendTraces("original-signal", update, [0]);
 
-
-        cnt++
-        if (cnt === Math.min(signal_x.length, 2000)){
-            clearInterval(plotting_interval)
-            updateBtnsState((plotting = false))
-        }
-    }, speed)
+    cnt++;
+    if (cnt === Math.min(signal_x.length, 2000)) {
+      clearInterval(plotting_interval);
+      updateBtnsState((plotting = false));
+    }
+  }, speed);
 }
 
 setTimeout(() => {
-    updateAllPassCoeff()
-}, 100)
+  updateAllPassCoeff();
+}, 100);
 
-function sine_wave(freq = 1, amplitude = 1, phase = 0, length = 1, resolution = 10000) {
-    const sin = Math.sin
-    const TWO_PI = 2*Math.PI
-    let generated_sine = {time:[], wave:[]}
-    for(let second of range(0, length-1))
-        for(let i = 0; i < resolution; i++){
-            let t = (i/(resolution-1)) + second
-            generated_sine.time[i+resolution*second] = t
-            generated_sine.wave[i+resolution*second] = sin(amplitude*TWO_PI*freq*t+phase)
-        }
-    return generated_sine
+function sine_wave(
+  freq = 1,
+  amplitude = 1,
+  phase = 0,
+  length = 1,
+  resolution = 10000
+) {
+  const sin = Math.sin;
+  const TWO_PI = 2 * Math.PI;
+  let generated_sine = { time: [], wave: [] };
+  for (let second of range(0, length - 1))
+    for (let i = 0; i < resolution; i++) {
+      let t = i / (resolution - 1) + second;
+      generated_sine.time[i + resolution * second] = t;
+      generated_sine.wave[i + resolution * second] = sin(
+        amplitude * TWO_PI * freq * t + phase
+      );
+    }
+  return generated_sine;
 }
 
 function* range(start, end) {
-    for (let i = start; i <= end; i++) {
-        yield i;
-    }
+  for (let i = start; i <= end; i++) {
+    yield i;
+  }
 }
 
-function updateBtnsState(plotting){
-    let btns = [stop_btn, submit_btn], disabled_state = [!plotting, plotting]
-    btns.forEach((btn, idx) => btn.disabled = disabled_state[idx])
-    btns.forEach(btn => btn.className = (btn.disabled)? 'disabled': 'btn')
+function updateBtnsState(plotting) {
+  let btns = [stop_btn, submit_btn],
+    disabled_state = [!plotting, plotting];
+  btns.forEach((btn, idx) => (btn.disabled = disabled_state[idx]));
+  btns.forEach((btn) => (btn.className = btn.disabled ? "disabled" : "btn"));
 }
 
-updateBtnsState((plotting = false))
+updateBtnsState((plotting = false));
+
+const canvas = document.getElementById("drawing-board");
+const toolbar = document.getElementById("toolbar");
+const ctx = canvas.getContext("2d");
+
+const canvasOffsetX = canvas.offsetLeft;
+const canvasOffsetY = canvas.offsetTop;
+var graphDiv = document.getElementById("myDiv");
+canvas.width = window.innerWidth - canvasOffsetX;
+canvas.height = window.innerHeight - canvasOffsetY;
+let isdown = false;
+var data = [
+  {
+    x: [0],
+    y: [0],
+    mode: "lines",
+    line: {
+      shape: "spline",
+      color: "#febc2c",
+    },
+  },
+];
+
+var filtter_data = [
+  {
+    x: [0],
+    y: [0],
+    mode: "lines",
+    line: {
+      shape: "spline",
+      color: "#fd413c",
+    },
+  },
+];
+var layout = {
+  yaxis: { range: [-1, 2.5] },
+  plot_bgcolor: "#111111",
+  paper_bgcolor: "#111111",
+};
+Plotly.newPlot(graphDiv, data, layout);
+Plotly.newPlot("filtered", filtter_data, layout);
+let isPainting = false;
+let lineWidth = 0;
+let startX;
+let startY;
+
+toolbar.addEventListener("click", (e) => {
+  if (e.target.id === "clear") {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+});
+
+toolbar.addEventListener("change", (e) => {
+  if (e.target.id === "color") {
+  }
+  if (e.target.id === "stroke") {
+    ctx.strokeStyle = e.target.value;
+  }
+
+  if (e.target.id === "lineWidth") {
+    lineWidth = e.target.value;
+  }
+});
+let d0 = new Date();
+t = [];
+g = [];
+mag = [];
+const draw = (e) => {
+  if (!isPainting) {
+    return;
+  }
+  const d = new Date();
+  t.push(
+    d.getMinutes() * 60000 +
+      d.getSeconds() * 1000 +
+      d.getMilliseconds() -
+      (d0.getMilliseconds() + d0.getSeconds() * 1000 + d0.getMinutes() * 60000)
+  );
+  mag.push(e.clientY);
+
+  realTime(t[t.length - 1], mag[mag.length - 1]);
+  console.log(e.clientX, e.clientY);
+  ctx.lineWidth = lineWidth;
+  ctx.lineCap = "round";
+
+  ctx.lineTo(e.clientX - canvasOffsetX, e.clientY);
+  ctx.stroke();
+};
+let Z = 1,
+  P = 1,
+  A = 1,
+  B = 1;
+canvas.addEventListener("mousedown", async function begin(e) {
+  let { zeros, poles } = filter_plane.getZerosPoles(radius);
+  Z = zeros;
+  P = poles;
+  isPainting = true;
+  if (Z.length === 0 && P.length === 0) {
+    notyf.error("No filter designed");
+  }
+  [A, B] = await get_differenceEquationCoefficients(zeros, poles);
+  y_filtterd = t.slice(0, A.length);
+  console.log(A, B);
+
+  t = [0];
+  mag = [0];
+  isdown = true;
+  try {
+    console.log(graphDiv.data.length);
+  } catch {
+    console.log("can not delete traces");
+  }
+  console.log(Plotly);
+  isPainting = true;
+  startX = e.clientX;
+  startY = e.clientY;
+
+  d0 = new Date();
+  console.log("down");
+  Plotly.addTraces("filtered", filtter_data);
+  Plotly.addTraces("myDiv", data);
+  console.log(graphDiv.data.length);
+});
+
+canvas.addEventListener("mouseup", (e) => {
+  isdown = false;
+  isPainting = false;
+  console.log(Plotly);
+  try {
+    Plotly.deleteTraces("myDiv", 0);
+    Plotly.deleteTraces("filtered", 0);
+  } catch {
+    console.log(Plotly);
+  }
+  ctx.stroke();
+  ctx.beginPath();
+
+  console.log("up");
+});
+canvas.addEventListener("mousemove", draw);
+
+let cnt = 1;
+function realTime(x, y) {
+  //t.push(x);
+  //mag.push(y);
+  x /= 1000;
+  dx = t[t.length - 1] - t[t.length - 2];
+  if (cnt == 1) {
+    (x = 0), (y = 0);
+  }
+  let update = {
+    x: [[t[t.length - 1]]],
+    y: [[y]],
+  };
+
+  let update_filterd = {
+    x: [[t[t.length - 1]]],
+    y: [[filter(A, B, t.length - 1, mag, y_filtterd)]],
+  };
+  console.log(x, y);
+  //  console.log(filter(A, B, t.length - 1, mag, y_filtterd), y);
+  let minuteView = {
+    xaxis: {
+      range: [t[t.length] - dx, t[t.length] - dx],
+    },
+    yaxis: { rangemode: "tozero", autorange: true },
+  };
+
+  Plotly.relayout("filtered", minuteView);
+  Plotly.extendTraces("filtered", update_filterd, [0]);
+  Plotly.relayout("myDiv", minuteView);
+  Plotly.extendTraces("myDiv", update, [0]);
+  if (!t[cnt]) {
+    y.push(10);
+  }
+  cnt++;
+  if (isdown == false) {
+    clearInterval(plotting_interval);
+    cnt = 1;
+  }
+}
